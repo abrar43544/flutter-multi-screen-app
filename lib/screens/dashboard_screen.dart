@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../controllers/auth_controller.dart';
 import '../models/subject_model.dart';
 import '../models/user_model.dart';
+import 'course_list_screen.dart';
 import 'detail_screen.dart';
 import 'login_screen.dart';
 
@@ -29,6 +30,12 @@ class DashboardScreen extends StatelessWidget {
       schedule: 'Friday, 9:00 AM - 12:00 PM',
       icon: Icons.business_center,
     ),
+    SubjectModel(
+      name: 'Courses API CRUD',
+      description: 'This section uses JSONPlaceholder REST API to perform create, read, update, and delete operations on course data.',
+      schedule: 'CRUD API Integration',
+      icon: Icons.api,
+    ),
   ];
 
   void logout(BuildContext context) {
@@ -41,6 +48,16 @@ class DashboardScreen extends StatelessWidget {
   }
 
   void openDetail(BuildContext context, SubjectModel subject) {
+    if (subject.name == 'Courses API CRUD') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const CourseListScreen(),
+        ),
+      );
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
