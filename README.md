@@ -1,120 +1,72 @@
-# Flutter Multi Screen App - Course API CRUD Integration
+# Flutter Offline CRUD Application
 
-## Student Information
-
-Name: Abrar Ahmed
-
-Course: Mobile Application Development
-
-Assignment: CRUD API Integration using JSONPlaceholder
-
-Branch Name: feature/course-api-integration
-
----
-
-## Project Overview
-
-This project is an extension of the previously developed Flutter Multi-Screen Authentication Application.
-
-The application includes:
-
-- User Registration
-- User Login
-- Dashboard Navigation
-- Form Validation
-- State Management
-- API Integration
-- CRUD Operations
-
----
+## Branch Name
+feature/offline-cache-and-state-manangement
 
 ## API Used
+JSONPlaceholder API
 
-JSONPlaceholder REST API
+https://jsonplaceholder.typicode.com/
 
-Endpoint:
+## Packages Used
 
-https://jsonplaceholder.typicode.com/posts
-
----
-
-## Documentation Followed
-
-Official JSONPlaceholder Documentation:
-
-https://jsonplaceholder.typicode.com/guide
-
----
-
-## Implemented CRUD Operations
-
-### Create (POST)
-
-Users can add a new course using the Add Course form.
-
-### Read (GET)
-
-Courses are fetched from the API and displayed in a list.
-
-### Update (PUT)
-
-Users can edit existing course information.
-
-### Delete (DELETE)
-
-Users can delete courses with confirmation dialog.
-
----
+- provider
+- shared_preferences
+- connectivity_plus
+- http
 
 ## Architecture
 
-The project follows a layered architecture:
+UI → Provider → Repository → API Service → Local Storage
 
-### Models
+### Layers
 
-- course_model.dart
-- user_model.dart
-- subject_model.dart
+- UI Layer (Screens)
+- Provider State Management
+- Repository Layer
+- API Service Layer
+- Local Storage Layer (SharedPreferences)
 
-### Services
+## Features
 
-- course_service.dart
+### CRUD Operations
 
-### Screens
-
-- login_screen.dart
-- register_screen.dart
-- dashboard_screen.dart
-- detail_screen.dart
-- course_list_screen.dart
-- course_form_screen.dart
-
-### Controllers
-
-- auth_controller.dart
-
-### Validators
-
-- app_validator.dart
-
----
-
-## Features Implemented
-
-- Authentication System
-- Form Validation
-- Navigation Between Screens
-- REST API Integration
-- Loading State Handling
-- Error State Handling
-- Create Course
-- Read Courses
+- Fetch Courses
+- Add Course
 - Update Course
 - Delete Course
-- Confirmation Dialog Before Delete
 
----
+### Offline Support
 
-## GitHub Branch
+- Courses are cached locally using SharedPreferences.
+- Cached courses are loaded when internet is unavailable.
 
-feature/course-api-integration
+### State Management
+
+Provider is used to manage:
+
+- Loading State
+- Success State
+- Error State
+- Empty State
+
+### Additional Features
+
+- Pull To Refresh
+- Search Courses
+- Optimistic UI Updates
+
+## Offline Strategy
+
+When internet is available:
+
+- Data is fetched from API
+- Data is cached locally
+
+When internet is unavailable:
+
+- Cached data is loaded from local storage
+
+## State Management Approach
+
+Provider handles application state and notifies UI whenever data changes.
