@@ -115,20 +115,6 @@ The project follows a layered architecture:
 
 ---
 
-## Screenshots
-
-Add the following screenshots here:
-
-1. Registration Screen
-2. Login Screen
-3. Dashboard Screen
-4. Course List Screen
-5. Add Course Screen
-6. Edit Course Screen
-7. Delete Confirmation Dialog
-
----
-
 ## GitHub Branch
 
 feature/course-api-integration

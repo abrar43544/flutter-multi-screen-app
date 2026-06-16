@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/course_model.dart';
-import '../services/course_service.dart';
 
 class CourseFormScreen extends StatefulWidget {
   final Course? course;
@@ -12,13 +11,9 @@ class CourseFormScreen extends StatefulWidget {
 }
 
 class _CourseFormScreenState extends State<CourseFormScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
-
-  final CourseService courseService = CourseService();
-
-  bool isLoading = false;
+  final formKey = GlobalKey<FormState>();
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   bool get isEdit => widget.course != null;
 
@@ -27,65 +22,29 @@ class _CourseFormScreenState extends State<CourseFormScreen> {
     super.initState();
 
     if (isEdit) {
-      _titleController.text = widget.course!.title;
-      _descriptionController.text = widget.course!.description;
+      titleController.text = widget.course!.title;
+      descriptionController.text = widget.course!.description;
     }
   }
 
-  Future<void> saveCourse() async {
-    if (!_formKey.currentState!.validate()) {
+  void saveCourse() {
+    if (!formKey.currentState!.validate()) {
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
+    final course = Course(
+      id: isEdit ? widget.course!.id : DateTime.now().millisecondsSinceEpoch,
+      title: titleController.text.trim(),
+      description: descriptionController.text.trim(),
+    );
 
-    try {
-      if (isEdit) {
-        final updatedCourse = await courseService.updateCourse(
-          Course(
-            id: widget.course!.id,
-            title: _titleController.text.trim(),
-            description: _descriptionController.text.trim(),
-          ),
-        );
-
-        if (!mounted) return;
-
-        Navigator.pop(context, updatedCourse);
-      } else {
-        final newCourse = await courseService.addCourse(
-          Course(
-            id: 0,
-            title: _titleController.text.trim(),
-            description: _descriptionController.text.trim(),
-          ),
-        );
-
-        if (!mounted) return;
-
-        Navigator.pop(context, newCourse);
-      }
-    } catch (error) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.toString())),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
+    Navigator.pop(context, course);
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
+    titleController.dispose();
+    descriptionController.dispose();
     super.dispose();
   }
 
@@ -94,20 +53,22 @@ class _CourseFormScreenState extends State<CourseFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEdit ? 'Edit Course' : 'Add Course'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             children: [
               TextFormField(
-                controller: _titleController,
+                controller: titleController,
                 decoration: const InputDecoration(
                   labelText: 'Course Title',
+                  prefixIcon: Icon(Icons.title),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return 'Title is required';
                   }
                   return null;
@@ -115,13 +76,14 @@ class _CourseFormScreenState extends State<CourseFormScreen> {
               ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _descriptionController,
+                controller: descriptionController,
                 maxLines: 4,
                 decoration: const InputDecoration(
                   labelText: 'Course Description',
+                  prefixIcon: Icon(Icons.description),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return 'Description is required';
                   }
                   return null;
@@ -130,11 +92,10 @@ class _CourseFormScreenState extends State<CourseFormScreen> {
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: isLoading ? null : saveCourse,
-                  child: isLoading
-                      ? const CircularProgressIndicator()
-                      : Text(isEdit ? 'Update Course' : 'Add Course'),
+                child: ElevatedButton.icon(
+                  onPressed: saveCourse,
+                  icon: Icon(isEdit ? Icons.edit : Icons.add),
+                  label: Text(isEdit ? 'Update Course' : 'Add Course'),
                 ),
               ),
             ],
